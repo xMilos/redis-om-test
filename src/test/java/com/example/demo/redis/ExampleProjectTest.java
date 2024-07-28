@@ -19,16 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Testcontainers
 @SpringBootTest
 @ContextConfiguration
-class ExampleProjectTest {
+class ExampleProjectTest extends RedisContainer{
 
     @Autowired
     RedisRepository redisRepository;
-
-    static {
-        GenericContainer<?> redis =
-                new GenericContainer<>(DockerImageName.parse("redis:latest")).withExposedPorts(6379);
-        redis.start();
-    }
 
     @BeforeEach
     void setUp() {
@@ -38,7 +32,7 @@ class ExampleProjectTest {
                 new ExampleProject(1L, 0, "Project A"),
                 new ExampleProject(2L, 0, "Project B"),
                 new ExampleProject(3L, 1, "Project C"),
-                new ExampleProject(4L, 0, "Project D"),
+                new ExampleProject(4L, 1, "Project D"),
                 new ExampleProject(5L, 1, "Project E")
         );
         // Populate the repository with sample data
@@ -47,9 +41,9 @@ class ExampleProjectTest {
 
     @Test
     void testGetAllRedisGeneric() {
-        Set<ExampleProject> data = redisRepository.findAllFields(ExampleProject.class, PageRequest.of(1, 2), ExampleProject$.ID, ExampleProject$.IS_DELETED);
-        assertEquals(2, data.size());
-        assertEquals(3L, data.stream().findFirst().get().getId());
+        Set<ExampleProject> data = redisRepository.findAllFields(ExampleProject.class, PageRequest.of(1, 4), ExampleProject$.ID, ExampleProject$.IS_DELETED);
+        assertEquals(1, data.size());
+        assertEquals(5L, data.stream().findFirst().get().getId());
         assertEquals(1, data.stream().findFirst().get().getIsDeleted());
         assertEquals(null, data.stream().findFirst().get().getName());
     }

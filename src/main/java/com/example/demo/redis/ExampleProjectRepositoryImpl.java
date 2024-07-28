@@ -16,7 +16,7 @@ public class ExampleProjectRepositoryImpl implements ExampleProjectRepository {
     @Override
     public <E> Set<E> findAllFields(Class<E> clazz, Pageable pageable, MetamodelField<E, ?>... fields) {
         Set<E> collect = entityStream.of(clazz)
-                .skip(pageable.getPageNumber()) // page number
+                .skip(pageable.getPageNumber() * pageable.getPageSize()) // page number
                 .limit(pageable.getPageSize()) // page size
                 .project(fields)
                 .collect(Collectors.toSet());
