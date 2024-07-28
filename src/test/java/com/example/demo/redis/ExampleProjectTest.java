@@ -1,25 +1,23 @@
 package com.example.demo.redis;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
 @SpringBootTest
 @ContextConfiguration
-class ExampleProjectTest extends RedisContainer{
+class ExampleProjectTest extends RedisContainer {
 
     @Autowired
     RedisRepository redisRepository;
@@ -45,6 +43,6 @@ class ExampleProjectTest extends RedisContainer{
         assertEquals(1, data.size());
         assertEquals(5L, data.stream().findFirst().get().getId());
         assertEquals(1, data.stream().findFirst().get().getIsDeleted());
-        assertEquals(null, data.stream().findFirst().get().getName());
+        assertNull(data.stream().findFirst().get().getName());
     }
 }
