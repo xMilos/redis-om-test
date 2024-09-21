@@ -10,37 +10,27 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@Testcontainers
-@SpringBootTest
-@ContextConfiguration
-class ExampleProjectTest {
+class ExampleProjectTest extends AbstractDocumentTest{
 
     @Autowired
     RedisRepository redisRepository;
-
-    static {
-        GenericContainer<?> redis =
-                new GenericContainer<>(DockerImageName.parse("redis:latest")).withExposedPorts(6379);
-        redis.start();
-    }
 
     @BeforeEach
     void setUp() {
         // Clear the repository before each test
         redisRepository.deleteAll();
-        List<ExampleProject> list = Arrays.asList(
-                new ExampleProject(1L, 0, "Project A"),
-                new ExampleProject(2L, 0, "Project B"),
-                new ExampleProject(3L, 1, "Project C"),
-                new ExampleProject(4L, 0, "Project D"),
-                new ExampleProject(5L, 1, "Project E")
-        );
+        List<ExampleProject> list = new ArrayList<>();
+        for (long i = 1; i <= 100000; i++) {
+            int status = (i % 2 == 0) ? 0 : 1; // Alternating status for example
+            String name = "Project " + i;
+            list.add(new ExampleProject(i, status, name));
+        }
         // Populate the repository with sample data
         redisRepository.saveAll(list);
     }
